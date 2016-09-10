@@ -1,11 +1,13 @@
 package com.penfolddev.cabahivelocator;
 
+import android.animation.Animator;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,9 @@ public class MapsActivity extends AppCompatActivity implements
     @BindView(R.id.form)
     LinearLayout form;
 
+    @BindView(R.id.description)
+    EditText description;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,23 +83,41 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
     private GoogleMap.OnMapLongClickListener longClickListener() {
-        return new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                Log.i(TAG, "long click happened");
-                mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .draggable(false)
-                        .title("Hive Location"));
-                form.animate().translationY(0).alpha(1.0f);
-            }
+        return latLng -> {
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .draggable(false));
+            form.animate().translationY(0).alpha(1.0f);
+            instructions.animate().translationY(-instructions.getHeight()).alpha(0.0f);
         };
     }
 
     @Override
     public void onCameraMove() {
         mMap.clear();
-        form.animate().translationY(form.getHeight()).alpha(0.0f);
+        instructions.animate().translationY(0).alpha(1.0f);
+        form.animate().translationY(form.getHeight()).alpha(0.0f).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                description.setText("");
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
     }
 
     @Override
@@ -114,7 +137,7 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+        Log.e(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
         Toast.makeText(this, connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
     }
 }
