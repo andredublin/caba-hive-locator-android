@@ -1,11 +1,15 @@
 package com.penfolddev.cabahivelocator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -18,9 +22,18 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
 
+    private Unbinder unbinder;  
+
+    @OnClick(R.id.get_started_button)
+    void navigateToMapActivity() {
+        MainActivityPermissionsDispatcher.accessLocationWithCheck(this);
+    }
+
     @NeedsPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
     void accessLocation() {
         // navigate to maps activity
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
     }
 
     @OnShowRationale(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -43,12 +56,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        unbinder = ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }

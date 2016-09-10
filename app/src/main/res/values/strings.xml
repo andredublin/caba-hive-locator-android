@@ -5,4 +5,6 @@
     <string name="button_allow">Allow</string>
     <string name="button_deny">Deny</string>
     <string name="permission_location_denied">Caba Hive Locator is unable to function properly without permission.</string>
+    <string name="welcome_text">Welcome to the Charleston Area Beekeepers Association Hive Locator. By using this application you are helping use find and capture swarms so that they will be cared for and put to good use. You can find us online at https://www.facebook.com/CharlestonAreaBeekeepersAssociation/</string>
+    <string name="button_get_started">Get Started</string>
 </resources>
