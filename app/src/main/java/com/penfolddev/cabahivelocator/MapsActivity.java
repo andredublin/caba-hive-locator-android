@@ -3,8 +3,8 @@ package com.penfolddev.cabahivelocator;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,7 +18,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MapsActivity extends FragmentActivity implements
+public class MapsActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         GoogleMap.OnCameraMoveListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -81,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements
         CameraPosition.Builder builder = new CameraPosition.Builder();
         builder.zoom(mMap.getMaxZoomLevel() / 1.5f);
         builder.target(target);
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
     }
 
     @Override

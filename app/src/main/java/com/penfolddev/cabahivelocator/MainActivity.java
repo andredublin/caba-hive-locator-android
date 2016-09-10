@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
 
-    private Unbinder unbinder;  
+    private Unbinder unbinder;
 
     @OnClick(R.id.get_started_button)
     void navigateToMapActivity() {
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnNeverAskAgain(android.Manifest.permission.ACCESS_FINE_LOCATION)
     void showNeverAskForLocation() {
+        Log.i(TAG, "Location permission denied.");
         Toast.makeText(this, R.string.permission_location_denied, Toast.LENGTH_SHORT).show();
     }
 
