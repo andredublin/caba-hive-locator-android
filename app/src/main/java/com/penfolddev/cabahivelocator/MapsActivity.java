@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -17,6 +19,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MapsActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -28,15 +35,28 @@ public class MapsActivity extends AppCompatActivity implements
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
+    private Unbinder unbinder;
+
+    @BindView(R.id.instructions)
+    TextView instructions;
+
+    @BindView(R.id.form)
+    LinearLayout form;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        unbinder = ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     @Override
@@ -62,16 +82,19 @@ public class MapsActivity extends AppCompatActivity implements
             @Override
             public void onMapLongClick(LatLng latLng) {
                 Log.i(TAG, "long click happened");
-                // set pin
-                // show form
+                mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .draggable(false)
+                        .title("Hive Location"));
+                form.animate().translationY(0).alpha(1.0f);
             }
         };
     }
 
     @Override
     public void onCameraMove() {
-        // clear pin if pin exists
-        // hide form if form showing
+        mMap.clear();
+        form.animate().translationY(form.getHeight()).alpha(0.0f);
     }
 
     @Override
